@@ -23,12 +23,11 @@
 
 package com.microsoft.intune.scepvalidation;
 
-public class IntuneServiceNotFoundException extends IntuneClientException
-{    
-    private static final long serialVersionUID = -8078207104310213630L;
+public class IntuneServiceNotFoundException extends IntuneClientException {
 
-    public IntuneServiceNotFoundException(String serviceName)
-    {
-        super("Did not find service named '" + serviceName + "' listed in Microsoft.Graph discovery service list.");
-    }
+	private static final long serialVersionUID = -8078207104310213630L;
+
+	public IntuneServiceNotFoundException(String serviceName) {
+		super("Did not find service named '" + serviceName + "' listed in Microsoft.Graph discovery service list.");
+	}
 }

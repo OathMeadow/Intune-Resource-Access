@@ -28,35 +28,30 @@ import java.util.UUID;
 import org.apache.http.StatusLine;
 import org.json.JSONObject;
 
-public class IntuneClientHttpErrorException extends IntuneClientException
-{
+public class IntuneClientHttpErrorException extends IntuneClientException {
 
-    private static final long serialVersionUID = -2909995512671260231L;
-    
-    private UUID activityId = null;
-    private StatusLine statusLine = null;
-    private JSONObject response = null;
-    
-    public int getStatusCode()
-    {
-        return this.statusLine.getStatusCode();
-    }
-    
-    public JSONObject getResponse()
-    {
-        return this.response;
-    }
-    
-    public UUID getActivityId()
-    {
-        return this.activityId;
-    }
-    
-    public IntuneClientHttpErrorException(StatusLine statusLine, JSONObject response, UUID activityId)
-    {
-        super(response.toString());
-        this.activityId = activityId;
-        this.statusLine = statusLine;
-        this.response = response;
-    }
+	private static final long serialVersionUID = -2909995512671260231L;
+
+	private final UUID activityId;
+	private final StatusLine statusLine;
+	private final JSONObject response;
+
+	public int getStatusCode() {
+		return this.statusLine.getStatusCode();
+	}
+
+	public JSONObject getResponse() {
+		return this.response;
+	}
+
+	public UUID getActivityId() {
+		return this.activityId;
+	}
+
+	public IntuneClientHttpErrorException(StatusLine statusLine, JSONObject response, UUID activityId) {
+		super(response.toString());
+		this.activityId = activityId;
+		this.statusLine = statusLine;
+		this.response = response;
+	}
 }

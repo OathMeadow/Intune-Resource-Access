@@ -28,41 +28,32 @@ import java.util.UUID;
 import com.microsoft.intune.scepvalidation.IntuneScepServiceClient;
 import com.microsoft.intune.scepvalidation.IntuneScepServiceException;
 
-public class Example 
-{
-    public static void main(String args[]) throws Exception 
-    {        
-        // *** IMPORTANT ***: This property file contains a parameter named AAD_APP_KEY.  This parameter is a secret and needs to be secured.
-        //                    Please secure this file properly on your file system.
-        InputStream in = Example.class.getResourceAsStream("com.microsoft.intune.props");
-        Properties props = new Properties();
-        props.load(in);
-        in.close();
-        
-        UUID transactionId = UUID.randomUUID();
-        String csr = "BASE64 Encoded CSR would go here";
-        
-        IntuneScepServiceClient client = new IntuneScepServiceClient(props);
-        
-        try 
-        {
-            client.ValidateRequest(transactionId.toString(), csr);
-            
-            client.SendSuccessNotification(transactionId.toString(), csr, "thumbprint", "serial", "2018-06-11T16:11:20.0904778Z", "authority");
-            
-            client.SendFailureNotification(transactionId.toString(), csr, 0x8000ffff, "description");    
-        }
-        catch(IntuneScepServiceException e)
-        {
-            // ERROR Handling for known exception scenario here
-            System.exit(1);
-        }
-        catch(Exception e)
-        {
-            // ERROR Handling for unknown exception here
-            System.exit(1);
-        }
-        
-        System.exit(0);
-    }
- }
+public class Example {
+
+	public static void main(String args[]) throws Exception {
+		// *** IMPORTANT ***: This property file contains a parameter named AAD_APP_KEY.  This parameter is a secret and needs to be secured.
+		//                    Please secure this file properly on your file system.
+		InputStream in = Example.class.getResourceAsStream("com.microsoft.intune.props");
+		Properties props = new Properties();
+		props.load(in);
+		in.close();
+
+		UUID transactionId = UUID.randomUUID();
+		String csr = "BASE64 Encoded CSR would go here";
+
+		IntuneScepServiceClient client = new IntuneScepServiceClient(props);
+
+		try {
+			client.ValidateRequest(transactionId.toString(), csr);
+			client.SendSuccessNotification(transactionId.toString(), csr, "thumbprint", "serial", "2018-06-11T16:11:20.0904778Z", "authority");
+			client.SendFailureNotification(transactionId.toString(), csr, 0x8000ffff, "description");
+		} catch (IntuneScepServiceException e) {
+			// ERROR Handling for known exception scenario here
+			System.exit(1);
+		} catch (Exception e) {
+			// ERROR Handling for unknown exception here
+			System.exit(1);
+		}
+		System.exit(0);
+	}
+}
