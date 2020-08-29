@@ -26,7 +26,8 @@ package com.microsoft.intune.scepvalidation;
 import java.util.UUID;
 
 import org.apache.http.StatusLine;
-import org.json.JSONObject;
+
+import net.minidev.json.JSONObject;
 
 public class IntuneClientHttpErrorException extends IntuneClientException {
 

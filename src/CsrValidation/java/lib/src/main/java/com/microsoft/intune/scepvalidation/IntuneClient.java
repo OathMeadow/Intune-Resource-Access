@@ -64,14 +64,17 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.microsoft.aad.adal4j.AuthenticationException;
 import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
+
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import net.minidev.json.parser.ParseException;
 
 /**
  * IntuneClient - A client which can be used to make requests to Intune services.
@@ -345,7 +348,6 @@ class IntuneClient {
 			IOException, AuthenticationException, IntuneClientException {
 
 		AuthenticationResult authResult = this.authClient.getAccessTokenFromCredential(this.graphResourceUrl);
-
 		String graphRequest = this.graphResourceUrl + intuneTenant + "/servicePrincipalsByAppId/" + this.intuneAppId + "/serviceEndpoints?api-version=" + this.graphApiVersion;
 
 		UUID activityId = UUID.randomUUID();
@@ -356,12 +358,11 @@ class IntuneClient {
 		CloseableHttpResponse graphResponse = null;
 		try {
 			graphResponse = httpclient.execute(httpGet);
-
 			JSONObject jsonResult = ParseResponseToJSON(graphResponse, graphRequest, activityId);
-
-			for (Object obj : jsonResult.getJSONArray("value")) {
+			JSONArray jsonArray = (JSONArray) jsonResult.get("value");
+			for (Object obj : jsonArray) {
 				JSONObject jObj = (JSONObject) obj;
-				serviceMap.put(jObj.getString("serviceName").toLowerCase(), jObj.getString("uri"));
+				serviceMap.put(jObj.getAsString("serviceName").toLowerCase(), jObj.getAsString("uri"));
 			}
 		} finally {
 			if (httpclient != null)
@@ -385,7 +386,6 @@ class IntuneClient {
 				throw new IntuneClientException("ActivityId: " + activityId + " Unable to get httpEntity from response getEntity returned null.");
 			}
 
-
 			String httpEntityStr;
 			try {
 				httpEntityStr = EntityUtils.toString(httpEntity);
@@ -394,8 +394,8 @@ class IntuneClient {
 			}
 
 			try {
-				jsonResult = new JSONObject(httpEntityStr);
-			} catch (JSONException e) {
+				jsonResult = (JSONObject) JSONValue.parseWithException(httpEntityStr);
+			} catch (ParseException e) {
 				throw new IntuneClientException("ActivityId: " + activityId + " Unable to parse response from Intune to JSON", e);
 			}
 

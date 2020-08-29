@@ -28,11 +28,12 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.microsoft.intune.scepvalidation.IntuneScepServiceException.ErrorCode;
+
+import net.minidev.json.JSONObject;
 
 /**
  * Client to access the ScepRequestValidationFEService in Intune
@@ -65,8 +66,8 @@ public class IntuneScepServiceClient extends IntuneClient {
 	/**
 	 * IntuneScepService Client constructor meant for dependency injection
 	 *
-	 * @param configProperties properties object containing client configuration information.
-	 * @param adalClient adal auth client wrapper.
+	 * @param configProperties  properties object containing client configuration information.
+	 * @param adalClient        adal auth client wrapper.
 	 * @param httpClientBuilder http builder
 	 */
 	public IntuneScepServiceClient(
@@ -107,11 +108,11 @@ public class IntuneScepServiceClient extends IntuneClient {
 			throw new IllegalArgumentException("The argument 'certificateRequest' is missing");
 		}
 
-		JSONObject requestBody = new JSONObject().put(
+		JSONObject requestBody = new JSONObject().appendField(
 				"request", (new JSONObject())
-						.put("transactionId", transactionId)
-						.put("certificateRequest", certificateRequest)
-						.put("callerInfo", this.providerNameAndVersion));
+						.appendField("transactionId", transactionId)
+						.appendField("certificateRequest", certificateRequest)
+						.appendField("callerInfo", this.providerNameAndVersion));
 
 		Post(requestBody, VALIDATION_URL, transactionId);
 	}
@@ -162,15 +163,15 @@ public class IntuneScepServiceClient extends IntuneClient {
 			throw new IllegalArgumentException("The argument 'certIssuingAuthority' is missing");
 		}
 
-		JSONObject requestBody = new JSONObject().put(
+		JSONObject requestBody = new JSONObject().appendField(
 				"notification", (new JSONObject())
-						.put("transactionId", transactionId)
-						.put("certificateRequest", certificateRequest)
-						.put("certificateThumbprint", certThumbprint)
-						.put("certificateSerialNumber", certSerialNumber)
-						.put("certificateExpirationDateUtc", certExpirationDate)
-						.put("issuingCertificateAuthority", certIssuingAuthority)
-						.put("callerInfo", this.providerNameAndVersion));
+						.appendField("transactionId", transactionId)
+						.appendField("certificateRequest", certificateRequest)
+						.appendField("certificateThumbprint", certThumbprint)
+						.appendField("certificateSerialNumber", certSerialNumber)
+						.appendField("certificateExpirationDateUtc", certExpirationDate)
+						.appendField("issuingCertificateAuthority", certIssuingAuthority)
+						.appendField("callerInfo", this.providerNameAndVersion));
 
 		Post(requestBody, NOTIFY_SUCCESS_URL, transactionId);
 	}
@@ -207,13 +208,13 @@ public class IntuneScepServiceClient extends IntuneClient {
 			throw new IllegalArgumentException("The argument 'errorDescription' is missing");
 		}
 
-		JSONObject requestBody = new JSONObject().put(
+		JSONObject requestBody = new JSONObject().appendField(
 				"notification", (new JSONObject())
-						.put("transactionId", transactionId)
-						.put("certificateRequest", certificateRequest)
-						.put("hResult", hResult)
-						.put("errorDescription", errorDescription)
-						.put("callerInfo", this.providerNameAndVersion));
+						.appendField("transactionId", transactionId)
+						.appendField("certificateRequest", certificateRequest)
+						.appendField("hResult", hResult)
+						.appendField("errorDescription", errorDescription)
+						.appendField("callerInfo", this.providerNameAndVersion));
 
 		Post(requestBody, NOTIFY_FAILURE_URL, transactionId);
 	}
@@ -231,8 +232,8 @@ public class IntuneScepServiceClient extends IntuneClient {
 			LOG.info("Activity " + activityId + " has completed.");
 			LOG.info(result.toString());
 
-			String code = result.getString("code");
-			String errorDescription = result.getString("errorDescription");
+			String code = result.getAsString("code");
+			String errorDescription = result.getAsString("errorDescription");
 
 			IntuneScepServiceException e = new IntuneScepServiceException(code, errorDescription, transactionId, activityId);
 
